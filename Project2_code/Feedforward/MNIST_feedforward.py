@@ -1,6 +1,19 @@
 from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
 
+def activation_func (x, W, b, func_type):
+    a = tf.matmul (x, W) + b
+    if func_type == "soft_max":
+        return tf.nn.softmax (a)
+    elif func_type == "sigmoid":
+        return tf.nn.softmax (a)
+    elif func_type == "ReLu":
+        return tf.nn.softmax (a)
+    elif func_type == "tanh":
+        return tf.nn.softmax (a)
+    else:
+        raise ValueError (func_type + " is not supported!")
+
 def main():
     # Parameters
     hidden_layer = [512, 256, 128, 64]
@@ -24,16 +37,28 @@ def main():
     ### Your code here ###
 
     # Build network
+    act_function = "sigmoid" #, ReLU, tanh
+    
+    # Input layer
     W.append (tf.Variable (tf.zeros ([784, hidden_layer[0]])))
+    b.append (tf.Variable (tf.zeros ([hidden_layer[0]])))
+    act_layer.append (activation_func (x, W[0], b[0], act_function))
+    
+    # Hidden layers
     num_hidden_layer = len (hidden_layer)
+    
     for i in range (num_hidden_layer):
         if i < num_hidden_layer - 2:
-            W.append (tf.Variable (tf.zeros ([hidden_layer[i], hidden_layer[i + 1]])) ) 
+            W.append (tf.Variable (tf.zeros ([hidden_layer[i], hidden_layer[i + 1]]))) 
+            b.append (tf.Variable (tf.zeros ([hidden_layer[i+1]])))
         else:
-            W.append (tf.Variable (tf.zeros ([hidden_layer[i], num_class)) ) 
+            W.append (tf.Variable (tf.zeros ([hidden_layer[i], num_class]))) 
+            b.append (tf.Variable (tf.zeros ([num_class])))
+            
+        act_layer.append (activation_func (act_layer[-1], W[-1], b[-1], act_function))
 
-
-
+    # output layer
+    out_layer = activation_func (act_layer[-1], W[-1], b[-1], "soft_max")
 
 
 
