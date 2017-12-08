@@ -22,7 +22,7 @@ def activation_func (x, W, b, func_type):
 
 def main():
     # Parameters
-    hidden_layer = [512]#*4#[512, 256, 128, 64]
+    hidden_layer = [512]#*4#[512, 256, 128, 64] #
     num_class = 10
     display_step = 100
     max_iter = 3000
@@ -72,21 +72,15 @@ def main():
             o = tf.matmul (act_layer[-1], W[-1]) + b[-1]
      
     # output layer
-    epsilon = tf.constant(value=0.001, shape=[32,10])
-    o = o + epsilon
-    y_label = tf.to_float(tf.reshape(y_label, (-1, 10)))
-
-    #epsilon = tf.constant(value=0.00001, shape=[32,10])
-    #o = o + epsilon
     out_layer = tf.nn.softmax(o) 
+    #out_layer = tf.nn.log_softmax(o) 
     ######################
 
     
     # Define loss function(Cross entropy)
     ### Comment this line in problem 2 ###
     #cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_label, logits=out_layer))
-    cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_label * tf.log(out_layer), reduction_indices=[1]))
-    #cross_entropy = -tf.reduce_mean(y_label * tf.log(out_layer))
+    cross_entropy = -tf.reduce_mean (y_label * tf.log(out_layer + 1e-10))
     ######################################
 
     # Define optimizer
